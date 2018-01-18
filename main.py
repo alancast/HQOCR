@@ -1,5 +1,7 @@
 import argparse
-from ocr import ProcessImage
+import webbrowser
+
+from ocr import ProcessTextFromImage
 
 def main():
     # Parse arguments from the call
@@ -11,7 +13,13 @@ def main():
     args = vars(ap.parse_args())
 
     # Process the image
-    ProcessImage(args)
+    text = ProcessTextFromImage(args)
+    print(text)
+
+    DoQuestionAnalysis(text)
+
+def DoQuestionAnalysis(question):
+    webbrowser.open("https://www.google.com/search?q=" + question)
   
 if __name__== "__main__":
     main()

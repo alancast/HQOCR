@@ -3,7 +3,7 @@ import pytesseract
 import cv2
 import os
 
-def ProcessImage(args):
+def ProcessTextFromImage(args):
 	# Load the example image and convert it to grayscale
 	image = cv2.imread(args["image"])
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -24,9 +24,11 @@ def ProcessImage(args):
 	# load the image as a PIL/Pillow image, apply OCR, and then delete the temporary file
 	text = pytesseract.image_to_string(Image.open(filename))
 	os.remove(filename)
-	print(text)
-	
-	# show the output images
+	return text
+
+	# ShowOutput(image, gray)
+
+def ShowOutput(image, gray):
 	cv2.imshow("Image", image)
 	cv2.imshow("Output", gray)
 	cv2.waitKey(0)
