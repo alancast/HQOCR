@@ -6,7 +6,7 @@ from ocr import ProcessTextFromImage
 
 def main():
     # ---------- All for Question ----------
-    questionBox=(60,270,500,430) # X1,Y1,X2,Y2
+    questionBox=(110,170,450,330) # X1,Y1,X2,Y2
     CapturePicture(questionBox, 'images/question.png')
     
     # Process the question image
@@ -15,10 +15,10 @@ def main():
     question = ' '.join(word for word in questionWords)
     print(question)
 
-    # DoQuestionAnalysis(text)
+    DoQuestionAnalysis(question)
 
     # ---------- All for answers ----------
-    answersBox=(30,470,510,790) # X1,Y1,X2,Y2
+    answersBox=(110,350,450,550) # X1,Y1,X2,Y2
     CapturePicture(answersBox, 'images/answers.png')
 
     # Process the answers image
@@ -26,6 +26,15 @@ def main():
     answers = ProcessTextFromImage(answerArgs).split('\n')
     answers = [x for x in answers if x != '']
     print(answers)
+
+    # Get hit count for each of the three answers
+    query1 = FormulateAnswersSearch(question, answers[0])
+    print(query1)
+    DoQuestionAnalysis(query1)
+    query2 = FormulateAnswersSearch(question, answers[1])
+    DoQuestionAnalysis(query2)
+    query3 = FormulateAnswersSearch(question, answers[2])
+    DoQuestionAnalysis(query3)
 
 
 def DoQuestionAnalysis(question):
@@ -51,6 +60,13 @@ def CreateCVArgs(filename):
     ap.add_argument("-p", "--preprocess", type=str, default="thresh",
         help="type of preprocessing to be done")
     return vars(ap.parse_args())
+
+# PURPOSE: Create the query string for question + answer
+# INPUTS: question: the HQ question
+#         answer: the HQ answer choice
+# RETURNS: the string of: question + " + answer + "
+def FormulateAnswersSearch(question, answer):
+    return question + " “" + answer + "”"
   
 if __name__== "__main__":
     main()
