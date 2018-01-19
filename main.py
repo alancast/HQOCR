@@ -16,8 +16,7 @@ def main():
     questionWords = ProcessTextFromImage(questionArgs).split()
     question = ' '.join(word for word in questionWords)
     # print(question)
-
-    DoQuestionAnalysis(question)
+    # DoQuestionAnalysis(question)
 
     # ---------- All for answers ----------
     answersBox=(110,350,450,550) # X1,Y1,X2,Y2
@@ -68,7 +67,7 @@ def CreateCVArgs(filename):
     ap = argparse.ArgumentParser()
     ap.add_argument("-i", "--image", default=filename, 
         help="path to input image to be OCR'd")
-    ap.add_argument("-p", "--preprocess", type=str, default="thresh",
+    ap.add_argument("-p", "--preprocess", type=str, default="blur",
         help="type of preprocessing to be done")
     return vars(ap.parse_args())
 
