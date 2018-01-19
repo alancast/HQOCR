@@ -1,7 +1,9 @@
 import argparse
 import pyscreenshot as ImageGrab
+import requests
 import webbrowser
 
+from bs4 import BeautifulSoup
 from ocr import ProcessTextFromImage
 
 def main():
@@ -13,7 +15,7 @@ def main():
     questionArgs = CreateCVArgs('images/question.png')
     questionWords = ProcessTextFromImage(questionArgs).split()
     question = ' '.join(word for word in questionWords)
-    print(question)
+    # print(question)
 
     DoQuestionAnalysis(question)
 
@@ -25,16 +27,25 @@ def main():
     answerArgs = CreateCVArgs('images/answers.png')
     answers = ProcessTextFromImage(answerArgs).split('\n')
     answers = [x for x in answers if x != '']
-    print(answers)
+    # print(answers)
 
     # Get hit count for each of the three answers
     query1 = FormulateAnswersSearch(question, answers[0])
-    print(query1)
-    DoQuestionAnalysis(query1)
+    results1 = FindResultsCount(query1)
+    # print(query1)
+    # DoQuestionAnalysis(query1)
+
     query2 = FormulateAnswersSearch(question, answers[1])
-    DoQuestionAnalysis(query2)
+    results2 = FindResultsCount(query2)
+    # DoQuestionAnalysis(query2)
+
     query3 = FormulateAnswersSearch(question, answers[2])
-    DoQuestionAnalysis(query3)
+    results3 = FindResultsCount(query3)
+    # DoQuestionAnalysis(query3)
+
+    print("\"%s\" : %s" % (answers[0], results1))
+    print("\"%s\" : %s" % (answers[1], results2))
+    print("\"%s\" : %s" % (answers[2], results3))
 
 
 def DoQuestionAnalysis(question):
@@ -67,6 +78,15 @@ def CreateCVArgs(filename):
 # RETURNS: the string of: question + " + answer + "
 def FormulateAnswersSearch(question, answer):
     return question + " “" + answer + "”"
+
+# PURPOSE: finds the result count of a google query
+# INPUTS: query: the query we want the result count for
+# RETURNS: text of the number of hits
+def FindResultsCount(query):
+    r = requests.get('http://www.google.com/search', 
+                        params={'q':query})
+    soup = BeautifulSoup(r.text, 'html.parser')
+    return soup.find('div',{'id':'resultStats'}).text
   
 if __name__== "__main__":
     main()
